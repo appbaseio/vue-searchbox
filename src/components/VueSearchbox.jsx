@@ -1,0 +1,77 @@
+import {
+  bool,
+  string,
+  object,
+  func,
+  dataField,
+  position,
+  suggestions,
+  highlightField,
+  queryFormat,
+  fuzziness,
+  title,
+  any,
+  number
+} from "../utils/types";
+
+const VueSearchbox = {
+  name: "VueSearchbox", // vue component name
+  props: {
+    app: string.isRequired,
+    url: string.def("https://scalr.api.appbase.io"),
+    credentials: string.isRequired,
+    analytics: bool.isRequired.def(false),
+    headers: object,
+    dataField: dataField,
+    nestedField: string,
+    title: string,
+    defaultValue: string,
+    value: string,
+    downShiftProps: object.def({}),
+    placeholder: string.def("Search"),
+    showIcon: bool.def(true),
+    iconPosition: position.def("right"),
+    icon: any,
+    showClear: bool.def(false),
+    clearIcon: any,
+    autosuggest: bool.def(true),
+    strictSelection: bool.def(false),
+    defaultSuggestions: suggestions,
+    debounce: number.def(0),
+    highlight: bool.def(false),
+    highlightField,
+    customHighlight: func,
+    queryFormat: queryFormat.def("or"),
+    fuzziness,
+    showVoiceSearch: bool.def(false),
+    searchOperators: bool.def(false),
+    render: func,
+    renderError: func,
+    renderNoSuggestion: title,
+    getMicInstance: func,
+    renderMic: func,
+    onChange: func,
+    onValueChange: func,
+    onSuggestions: func,
+    onError: func,
+    onResults: func,
+    innerClass: object,
+    style: object,
+    defaultQuery: func,
+    beforeValueChange: func,
+    onQueryChange: func,
+    className: string.def(""),
+    loader: object,
+    onBlur: func,
+    onKeyPress: func,
+    onKeyUp: func,
+    onFocus: func,
+    onKeyDown: func,
+    autoFocus: bool.def(false)
+  },
+  render() {
+    return null;
+  }
+};
+
+export default VueSearchbox;

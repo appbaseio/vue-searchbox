@@ -12,7 +12,9 @@
     "build": "nps build",
     "watch": "nps watch"
   },
-  "dependencies": {},
+  "dependencies": {
+    "vue-types": "^1.6.0"
+  },
   "peerDependencies": {
     "vue": "^2.6.10"
   },
