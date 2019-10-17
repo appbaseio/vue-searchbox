@@ -1,76 +1,110 @@
-import {
-  bool,
-  string,
-  object,
-  func,
-  dataField,
-  position,
-  suggestions,
-  highlightField,
-  queryFormat,
-  fuzziness,
-  title,
-  any,
-  number
-} from "../utils/types";
+import { types } from "../utils/types";
+import Input from "../styles/Input";
+import Searchbase from "@appbaseio/searchbase";
 
 const VueSearchbox = {
   name: "VueSearchbox", // vue component name
   props: {
-    app: string.isRequired,
-    url: string.def("https://scalr.api.appbase.io"),
-    credentials: string.isRequired,
-    analytics: bool.isRequired.def(false),
-    headers: object,
-    dataField: dataField,
-    nestedField: string,
-    title: string,
-    defaultValue: string,
-    value: string,
-    downShiftProps: object.def({}),
-    placeholder: string.def("Search"),
-    showIcon: bool.def(true),
-    iconPosition: position.def("right"),
-    icon: any,
-    showClear: bool.def(false),
-    clearIcon: any,
-    autosuggest: bool.def(true),
-    strictSelection: bool.def(false),
-    defaultSuggestions: suggestions,
-    debounce: number.def(0),
-    highlight: bool.def(false),
-    highlightField,
-    customHighlight: func,
-    queryFormat: queryFormat.def("or"),
-    fuzziness,
-    showVoiceSearch: bool.def(false),
-    searchOperators: bool.def(false),
-    render: func,
-    renderError: func,
-    renderNoSuggestion: title,
-    getMicInstance: func,
-    renderMic: func,
-    onChange: func,
-    onValueChange: func,
-    onSuggestions: func,
-    onError: func,
-    onResults: func,
-    innerClass: object,
-    style: object,
-    defaultQuery: func,
-    beforeValueChange: func,
-    onQueryChange: func,
-    className: string.def(""),
-    loader: object,
-    onBlur: func,
-    onKeyPress: func,
-    onKeyUp: func,
-    onFocus: func,
-    onKeyDown: func,
-    autoFocus: bool.def(false)
+    app: types.app,
+    url: types.url,
+    credentials: types.credentials,
+    analytics: types.analytics,
+    headers: types.headers,
+    dataField: types.dataField,
+    nestedField: types.nestedField,
+    title: types.title,
+    defaultValue: types.defaultValue,
+    value: types.value,
+    placeholder: types.placeholder,
+    showIcon: types.showIcon,
+    iconPosition: types.iconPosition,
+    icon: types.icon,
+    showClear: types.showClear,
+    clearIcon: types.clearIcon,
+    autosuggest: types.autosuggest,
+    strictSelection: types.strictSelection,
+    defaultSuggestions: types.defaultSuggestions,
+    debounce: types.debounce,
+    highlight: types.highlight,
+    highlightField: types.highlightField,
+    customHighlight: types.customHighlight,
+    queryFormat: types.queryFormat,
+    fuzziness: types.fuzziness,
+    showVoiceSearch: types.showVoiceSearch,
+    searchOperators: types.searchOperators,
+    render: types.render,
+    renderError: types.renderError,
+    renderNoSuggestion: types.renderNoSuggestion,
+    getMicInstance: types.getMicInstance,
+    renderMic: types.renderMic,
+    onChange: types.onChange,
+    onValueChange: types.onValueChange,
+    onSuggestions: types.onSuggestions,
+    onError: types.onError,
+    onResults: types.onResults,
+    innerClass: types.innerClass,
+    defaultQuery: types.defaultQuery,
+    beforeValueChange: types.beforeValueChange,
+    onQueryChange: types.onQueryChange,
+    className: types.className,
+    loader: types.loader,
+    onBlur: types.onBlur,
+    onKeyPress: types.onKeyPress,
+    onKeyUp: types.onKeyUp,
+    onFocus: types.onFocus,
+    onKeyDown: types.onKeyDown,
+    autoFocus: types.autoFocus
+  },
+  created() {
+    this._initSearchBase();
+  },
+  methods: {
+    _initSearchBase() {
+      const {
+        app,
+        url,
+        dataField,
+        credentials,
+        analytics,
+        headers,
+        nestedField,
+        defaultQuery,
+        beforeValueChange,
+        queryFormat,
+        defaultSuggestions,
+        fuzziness,
+        searchOperators
+      } = this.$props;
+
+      try {
+        const transformQuery = query => {
+          if (defaultQuery) return defaultQuery(query, this.state.currentValue);
+          return Promise.resolve(query);
+        };
+
+        this.searchBase = new Searchbase({
+          index: app,
+          url,
+          dataField,
+          credentials,
+          analytics,
+          headers,
+          nestedField,
+          transformQuery,
+          beforeValueChange,
+          queryFormat,
+          suggestions: defaultSuggestions,
+          fuzziness,
+          searchOperators
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
   },
   render() {
-    return null;
+    console.log(this.searchBase);
+    return <Input />;
   }
 };
 

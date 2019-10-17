@@ -1,55 +1,65 @@
 import VueTypes from "vue-types";
 
-export const string = VueTypes.string;
-export const bool = VueTypes.bool;
-export const object = VueTypes.object;
-export const array = VueTypes.array;
-export const number = VueTypes.number;
-export const func = VueTypes.func;
-export const any = VueTypes.any;
-
 const DataField = VueTypes.shape({
-  field: string,
-  weight: number
+  field: VueTypes.string,
+  weight: VueTypes.number
 });
 
-export const dataField = VueTypes.oneOfType([
-  string,
-  VueTypes.arrayOf(VueTypes.oneOfType([string, DataField]))
-]);
-
-export const reactType = VueTypes.oneOfType([
-  string,
-  VueTypes.arrayOf(string),
-  object,
-  VueTypes.arrayOf(object)
-]);
-
-export const react = VueTypes.shape({
-  and: reactType,
-  or: reactType,
-  not: reactType
-});
-
-export const position = VueTypes.oneOf(["left", "right"]);
-
-export const suggestions = VueTypes.arrayOf(object);
-
-export const highlightField = VueTypes.oneOfType([
-  string,
-  VueTypes.arrayOf(string)
-]);
-
-export const queryFormat = VueTypes.oneOf(["and", "or"]);
-
-export const fuzziness = VueTypes.oneOf([0, 1, 2, "AUTO"]);
-
-export const title = VueTypes.oneOfType([string, any]);
-
-export const wholeNumber = function(props, propName, componentName) {
-  if (typeof props[propName] != "number" || props[propName] < 0) {
-    return new Error(
-      `Invalid type of ${propName} supplied to ${componentName}. Validation failed`
-    );
-  }
+export const types = {
+  app: VueTypes.string.isRequired,
+  url: VueTypes.string.def("https://scalr.api.appbase.io"),
+  credentials: VueTypes.string.isRequired,
+  analytics: VueTypes.bool.def(false),
+  headers: VueTypes.object,
+  dataField: VueTypes.oneOfType([
+    VueTypes.string,
+    VueTypes.arrayOf(VueTypes.oneOfType([VueTypes.string, DataField]))
+  ]),
+  nestedField: VueTypes.string,
+  title: VueTypes.string,
+  defaultValue: VueTypes.string,
+  value: VueTypes.string,
+  placeholder: VueTypes.string.def("Search"),
+  showIcon: VueTypes.bool.def(true),
+  iconPosition: VueTypes.oneOf(["left", "right"]).def("right"),
+  icon: VueTypes.any,
+  showClear: VueTypes.bool.def(false),
+  clearIcon: VueTypes.any,
+  autosuggest: VueTypes.bool.def(true),
+  strictSelection: VueTypes.bool.def(false),
+  defaultSuggestions: VueTypes.arrayOf(VueTypes.object),
+  debounce: VueTypes.number.def(0),
+  highlight: VueTypes.bool.def(false),
+  highlightField: VueTypes.oneOfType([
+    VueTypes.string,
+    VueTypes.arrayOf(VueTypes.string)
+  ]),
+  customHighlight: VueTypes.func,
+  queryFormat: VueTypes.oneOf(["and", "or"]).def("or"),
+  fuzziness: VueTypes.oneOf([0, 1, 2, "AUTO"]),
+  showVoiceSearch: VueTypes.bool.def(false),
+  searchOperators: VueTypes.bool.def(false),
+  render: VueTypes.func,
+  renderError: VueTypes.func,
+  renderNoSuggestion: VueTypes.oneOfType([VueTypes.string, VueTypes.any]),
+  getMicInstance: VueTypes.func,
+  renderMic: VueTypes.func,
+  onChange: VueTypes.func,
+  onValueChange: VueTypes.func,
+  onSuggestions: VueTypes.func,
+  onError: VueTypes.func,
+  onResults: VueTypes.func,
+  innerClass: VueTypes.object,
+  style: VueTypes.object,
+  defaultQuery: VueTypes.func,
+  beforeValueChange: VueTypes.func,
+  onQueryChange: VueTypes.func,
+  className: VueTypes.string.def(""),
+  loader: VueTypes.object,
+  onBlur: VueTypes.func,
+  onKeyPress: VueTypes.func,
+  onKeyUp: VueTypes.func,
+  onFocus: VueTypes.func,
+  onKeyDown: VueTypes.func,
+  autoFocus: VueTypes.bool.def(false)
 };
