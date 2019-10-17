@@ -1,5 +1,5 @@
 {
-  "name": "example",
+  "name": "test-example",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,7 +10,7 @@
   "dependencies": {
     "core-js": "^2.6.5",
     "vue": "^2.6.10",
-    "vue-searchbox": "^0.0.2"
+    "vue-searchbox": "link:.."
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.12.0",

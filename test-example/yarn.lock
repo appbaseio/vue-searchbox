@@ -8072,12 +8072,9 @@ vue-loader@^15.7.0:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
-vue-searchbox@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/vue-searchbox/-/vue-searchbox-0.0.2.tgz#1ceaf7d8eb6acdda6b4bf3f5cadf2ac4d31befe1"
-  integrity sha512-b5HeHSlRH+hOKpMwQb0vhqw2xFfcOyS6Q7OMsebkC88eLnhl0+piyLwcnHKC01DdbO6jW/X6wjNcAuDh+bTq7A==
-  dependencies:
-    vue "^2.6.10"
+"vue-searchbox@link:..":
+  version "0.0.0"
+  uid ""
 
 vue-style-loader@^4.1.0:
   version "4.1.2"
