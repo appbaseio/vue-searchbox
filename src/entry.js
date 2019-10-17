@@ -1,5 +1,5 @@
 // Import vue component
-import component from './vue-searchbox.vue';
+import component from './VueSearchbox.jsx';
 
 // install function executed by Vue.use()
 function install(Vue) {
