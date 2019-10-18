@@ -40,6 +40,7 @@ const VueSearchbox = {
     render: types.render,
     renderError: types.renderError,
     renderNoSuggestion: types.renderNoSuggestion,
+    renderAllSuggestions: types.renderAllSuggestions,
     renderMic: types.renderMic,
     innerClass: types.innerClass,
     defaultQuery: types.defaultQuery,
@@ -211,7 +212,7 @@ const VueSearchbox = {
       );
     },
     renderNoSuggestionComponent() {
-      const { renderNoSuggestion, innerClass, renderError } = this.$props;
+      const { innerClass, renderError } = this.$props;
       const {
         loading,
         error,
@@ -219,6 +220,8 @@ const VueSearchbox = {
         currentValue,
         suggestionsList
       } = this.$data;
+      const renderNoSuggestion =
+        this.$scopedSlots.renderNoSuggestion || this.$props.renderNoSuggestion;
       if (
         renderNoSuggestion &&
         isOpen &&
@@ -240,7 +243,9 @@ const VueSearchbox = {
       return null;
     },
     renderErrorComponent() {
-      const { renderError, innerClass } = this.$props;
+      const { innerClass } = this.$props;
+      const renderError =
+        this.$scopedSlots.renderError || this.$props.renderError;
       const { error, loading, currentValue } = this.$data;
       if (error && renderError && currentValue && !loading) {
         return (
@@ -289,6 +294,9 @@ const VueSearchbox = {
           : renderError;
       return <div>Error initializing SearchBase. Please try again.</div>;
     }
+    const renderAllSuggestions =
+      this.$scopedSlots.renderAllSuggestions ||
+      this.$props.renderAllSuggestions;
     return (
       <div class={className}>
         {title && (
@@ -343,8 +351,17 @@ const VueSearchbox = {
                     }}
                   />
                   {this.renderIcons()}
+                  {renderAllSuggestions &&
+                    renderAllSuggestions({
+                      currentValue,
+                      isOpen,
+                      getItemProps,
+                      getItemEvents,
+                      highlightedIndex,
+                      parsedSuggestions: suggestionsList
+                    })}
                   {this.renderErrorComponent()}
-                  {isOpen && suggestionsList.length ? (
+                  {!renderAllSuggestions && isOpen && suggestionsList.length ? (
                     <ul
                       class={`${suggestions} ${getClassName(
                         innerClass,
