@@ -5,6 +5,8 @@ import DownShift from "./DownShift.jsx";
 import { getClassName } from "../utils/helper";
 import { suggestions, suggestionsContainer } from "../styles/Suggestions";
 import SuggestionItem from "../addons/SuggestionItem.jsx";
+import Title from "../styles/Title";
+import Icons from "./Icons.jsx";
 
 const VueSearchbox = {
   name: "VueSearchbox", // vue component name
@@ -18,7 +20,6 @@ const VueSearchbox = {
     nestedField: types.nestedField,
     title: types.title,
     defaultValue: types.defaultValue,
-    value: types.value,
     placeholder: types.placeholder,
     showIcon: types.showIcon,
     iconPosition: types.iconPosition,
@@ -39,7 +40,6 @@ const VueSearchbox = {
     render: types.render,
     renderError: types.renderError,
     renderNoSuggestion: types.renderNoSuggestion,
-    getMicInstance: types.getMicInstance,
     renderMic: types.renderMic,
     innerClass: types.innerClass,
     defaultQuery: types.defaultQuery,
@@ -62,7 +62,6 @@ const VueSearchbox = {
     return this.state;
   },
   created() {
-    console.log(this.$props);
     this._initSearchBase();
   },
   methods: {
@@ -120,7 +119,6 @@ const VueSearchbox = {
       this.suggestionsList = (suggestions.next && suggestions.next.data) || [];
     },
     onInputChange(event) {
-      console.log("inside oninputchange", event);
       this.setValue({ value: event.target.value, event });
     },
     onSuggestionSelected(suggestion) {
@@ -131,7 +129,6 @@ const VueSearchbox = {
         );
     },
     setValue({ value, isOpen = true }) {
-      console.log("inside setValue", this.searchBase);
       const { debounce } = this.$props;
       this.isOpen = isOpen;
       if (debounce > 0)
@@ -139,7 +136,6 @@ const VueSearchbox = {
       this.triggerSuggestionsQuery(value);
     },
     triggerSuggestionsQuery(value) {
-      console.log("inside triggerSuggestionsQuery", value);
       this.searchBase &&
         this.searchBase.setValue(value || "", {
           triggerSuggestionsQuery: true
@@ -161,13 +157,17 @@ const VueSearchbox = {
 
       this.$emit("keyDown", event);
     },
+    handleMicClick() {
+      this.searchBase &&
+        this.searchBase.onMicClick(null, {
+          triggerSuggestionsQuery: true
+        });
+    },
     renderIcons() {
       const {
         iconPosition,
         showClear,
         clearIcon,
-        getMicInstance,
-        renderMic,
         innerClass,
         showVoiceSearch,
         icon,
@@ -184,19 +184,55 @@ const VueSearchbox = {
           handleSearchIconClick={this.handleSearchIconClick}
           icon={icon}
           showIcon={showIcon}
-          getMicInstance={getMicInstance}
-          renderMic={renderMic}
           innerClass={innerClass}
           enableVoiceSearch={showVoiceSearch}
-          onMicClick={() => {
-            this.searchBase &&
-              this.searchBase.onMicClick(null, {
-                triggerSuggestionsQuery: true
-              });
-          }}
           micStatus={micStatus}
+          handleMicClick={this.handleMicClick}
         />
       );
+    },
+    renderNoSuggestionComponent() {
+      const { renderNoSuggestion, innerClass, renderError } = this.$props;
+      const {
+        loading,
+        error,
+        isOpen,
+        currentValue,
+        suggestionsList
+      } = this.$data;
+      if (
+        renderNoSuggestion &&
+        isOpen &&
+        !suggestionsList.length &&
+        !loading &&
+        currentValue &&
+        !(renderError && error)
+      ) {
+        return (
+          <div
+            class={`no-suggestions ${getClassName(innerClass, "noSuggestion")}`}
+          >
+            {typeof renderNoSuggestion === "function"
+              ? renderNoSuggestion(currentValue)
+              : renderNoSuggestion}
+          </div>
+        );
+      }
+      return null;
+    },
+    renderErrorComponent() {
+      const { renderError, innerClass } = this.$props;
+      const { error, loading, currentValue } = this.$data;
+      if (error && renderError && currentValue && !loading) {
+        return (
+          <div class={getClassName(innerClass, "error")}>
+            {typeof renderError === "function"
+              ? renderError(error)
+              : renderError}
+          </div>
+        );
+      }
+      return null;
     },
     clearValue() {
       this.setValue({ value: "", isOpen: false });
@@ -215,96 +251,150 @@ const VueSearchbox = {
     const {
       className,
       innerClass,
-      value,
       showIcon,
       showClear,
-      iconPosition
+      iconPosition,
+      title,
+      defaultSuggestions,
+      autosuggest,
+      placeholder,
+      autoFocus,
+      innerRef
     } = this.$props;
     const { currentValue, isOpen, suggestionsList } = this.$data;
     return (
       <div class={className}>
-        <DownShift
-          id="searchbox-downshift"
-          handleChange={this.onSuggestionSelected}
-          handleMouseup={this.handleStateChange}
-          isOpen={isOpen}
-          scopedSlots={{
-            default: ({
-              getInputEvents,
-              getInputProps,
+        {title && (
+          <Title class={getClassName(innerClass, "title") || null}>
+            {title}
+          </Title>
+        )}
+        {defaultSuggestions || autosuggest ? (
+          <DownShift
+            id="searchbox-downshift"
+            handleChange={this.onSuggestionSelected}
+            handleMouseup={this.handleStateChange}
+            isOpen={isOpen}
+            scopedSlots={{
+              default: ({
+                getInputEvents,
+                getInputProps,
 
-              getItemProps,
-              getItemEvents,
+                getItemProps,
+                getItemEvents,
 
-              isOpen,
-              highlightedIndex
-            }) => (
-              <div class={suggestionsContainer}>
-                <Input
-                  id="search-box"
-                  showIcon={showIcon}
-                  showClear={showClear}
-                  iconPosition={iconPosition}
-                  class={getClassName(innerClass, "input")}
-                  {...{
-                    on: getInputEvents({
-                      onInput: this.onInputChange,
-                      onBlur: e => {
-                        this.$emit("blur", e);
-                      },
-                      onFocus: this.handleFocus,
-                      onKeyPress: e => {
-                        this.$emit("keyPress", e);
-                      },
-                      onKeyDown: e => this.handleKeyDown(e, highlightedIndex),
-                      onKeyUp: e => {
-                        this.$emit("keyUp", e);
-                      }
-                    })
-                  }}
-                  {...{
-                    domProps: getInputProps({
-                      value:
-                        value || (currentValue === null ? "" : currentValue)
-                    })
-                  }}
-                />
-                {isOpen && suggestionsList.length ? (
-                  <ul
-                    class={`${suggestions} ${getClassName(innerClass, "list")}`}
-                  >
-                    {suggestionsList.slice(0, 10).map((item, index) => (
-                      <li
-                        {...{
-                          domProps: getItemProps({ item })
-                        }}
-                        {...{
-                          on: getItemEvents({
-                            item
-                          })
-                        }}
-                        key={`${index + 1}-${item.value}`}
-                        style={{
-                          backgroundColor: this.getBackgroundColor(
-                            highlightedIndex,
-                            index
-                          )
-                        }}
-                      >
-                        <SuggestionItem
-                          currentValue={currentValue}
-                          suggestion={item}
-                        />
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <div>no suggestion</div>
-                )}
-              </div>
-            )
-          }}
-        />
+                isOpen,
+                highlightedIndex
+              }) => (
+                <div class={suggestionsContainer}>
+                  <Input
+                    id="search-box"
+                    showIcon={showIcon}
+                    showClear={showClear}
+                    iconPosition={iconPosition}
+                    class={getClassName(innerClass, "input")}
+                    {...{
+                      on: getInputEvents({
+                        onInput: this.onInputChange,
+                        onBlur: e => {
+                          this.$emit("blur", e);
+                        },
+                        onFocus: this.handleFocus,
+                        onKeyPress: e => {
+                          this.$emit("keyPress", e);
+                        },
+                        onKeyDown: e => this.handleKeyDown(e, highlightedIndex),
+                        onKeyUp: e => {
+                          this.$emit("keyUp", e);
+                        }
+                      })
+                    }}
+                    {...{
+                      domProps: getInputProps({
+                        value: currentValue ? currentValue : ""
+                      })
+                    }}
+                  />
+                  {this.renderIcons()}
+                  {this.renderErrorComponent()}
+                  {isOpen && suggestionsList.length ? (
+                    <ul
+                      class={`${suggestions} ${getClassName(
+                        innerClass,
+                        "list"
+                      )}`}
+                    >
+                      {suggestionsList.slice(0, 10).map((item, index) => (
+                        <li
+                          {...{
+                            domProps: getItemProps({ item })
+                          }}
+                          {...{
+                            on: getItemEvents({
+                              item
+                            })
+                          }}
+                          key={`${index + 1}-${item.value}`}
+                          style={{
+                            backgroundColor: this.getBackgroundColor(
+                              highlightedIndex,
+                              index
+                            )
+                          }}
+                        >
+                          <SuggestionItem
+                            currentValue={currentValue}
+                            suggestion={item}
+                          />
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    this.renderNoSuggestionComponent()
+                  )}
+                </div>
+              )
+            }}
+          />
+        ) : (
+          <div class={suggestionsContainer}>
+            <Input
+              class={getClassName(innerClass, "input") || ""}
+              placeholder={placeholder}
+              {...{
+                on: {
+                  blur: e => {
+                    this.$emit("blur", e);
+                  },
+                  keypress: e => {
+                    this.$emit("keyPress", e);
+                  },
+                  input: this.onInputChange,
+                  focus: e => {
+                    this.$emit("focus", e);
+                  },
+                  keydown: e => {
+                    this.$emit("keyDown", e);
+                  },
+                  keyup: e => {
+                    this.$emit("keyUp", e);
+                  }
+                }
+              }}
+              {...{
+                domProps: {
+                  autofocus: autoFocus,
+                  value: currentValue ? currentValue : ""
+                }
+              }}
+              iconPosition={iconPosition}
+              showIcon={showIcon}
+              showClear={showClear}
+              innerRef={innerRef}
+            />
+            {this.renderIcons()}
+          </div>
+        )}
       </div>
     );
   }
