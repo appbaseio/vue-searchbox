@@ -12,7 +12,12 @@
     "build": "nps build",
     "watch": "nps watch"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@appbaseio/searchbase": "^1.0.0-alpha.2",
+    "@appbaseio/vue-emotion": "^0.4.4",
+    "emotion": "^10.0.17",
+    "vue-types": "^1.6.0"
+  },
   "peerDependencies": {
     "vue": "^2.6.10"
   },
