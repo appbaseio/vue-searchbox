@@ -2,7 +2,7 @@ import { types } from "../utils/types";
 import Input from "../styles/Input";
 import Searchbase from "@appbaseio/searchbase";
 import DownShift from "./DownShift.jsx";
-import { getClassName } from "../utils/helper";
+import { equals, getClassName } from "../utils/helper";
 import { suggestions, suggestionsContainer } from "../styles/Suggestions";
 import SuggestionItem from "../addons/SuggestionItem.jsx";
 import Title from "../styles/Title";
@@ -59,12 +59,22 @@ const VueSearchbox = {
       isOpen: false,
       error: null,
       loading: false,
-      initError: null
+      initError: null,
+      micStatus: undefined
     };
     return this.state;
   },
   created() {
     this._initSearchBase();
+  },
+  watch: {
+    dataField: (next, prev) => this._applySetter(prev, next, "setDataField"),
+    headers: (next, prev) => this._applySetter(prev, next, "setHeaders"),
+    fuzziness: (next, prev) => this._applySetter(prev, next, "setFuzziness"),
+    nestedField: (next, prev) => this._applySetter(prev, next, "setNestedField")
+  },
+  beforeDestroy() {
+    this.searchBase.unsubscribeToStateChanges(this.setStateValue);
   },
   methods: {
     _initSearchBase() {
@@ -134,6 +144,10 @@ const VueSearchbox = {
         this.initError = e;
         console.error(e);
       }
+    },
+    _applySetter(prev, next, setterFunc) {
+      if (!equals(prev, next))
+        this.searchBase && this.searchBase[setterFunc](next);
     },
     setStateValue({ suggestions = {} }) {
       this.suggestionsList = (suggestions.next && suggestions.next.data) || [];
