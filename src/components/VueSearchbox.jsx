@@ -57,7 +57,8 @@ const VueSearchbox = {
       suggestionsList: defaultSuggestions || [],
       isOpen: false,
       error: null,
-      loading: false
+      loading: false,
+      initError: null
     };
     return this.state;
   },
@@ -107,11 +108,29 @@ const VueSearchbox = {
           "suggestions"
         ]);
 
+        this.searchBase.onQueryChange = (...args) => {
+          this.$emit("queryChange", ...args);
+        };
+        this.searchBase.onSuggestions = (...args) => {
+          this.$emit("suggestions", ...args);
+        };
+        this.searchBase.onError = error => {
+          this.error = error;
+          this.$emit("error", error);
+        };
+        this.searchBase.onSuggestionsRequestStatusChange = next => {
+          this.loading = next === "PENDING";
+        };
+        this.searchBase.onMicStatusChange = next => {
+          this.micStatus = next;
+          this.isOpen = next === "INACTIVE" && !this.loading;
+        };
         this.searchBase.onValueChange = nextValue => {
           this.currentValue = nextValue;
           this.$emit("valueChange", nextValue);
         };
       } catch (e) {
+        this.initError = e;
         console.error(e);
       }
     },
@@ -259,9 +278,17 @@ const VueSearchbox = {
       autosuggest,
       placeholder,
       autoFocus,
-      innerRef
+      innerRef,
+      renderError
     } = this.$props;
-    const { currentValue, isOpen, suggestionsList } = this.$data;
+    const { currentValue, isOpen, suggestionsList, initError } = this.$data;
+    if (initError) {
+      if (renderError)
+        return typeof renderError === "function"
+          ? renderError(initError)
+          : renderError;
+      return <div>Error initializing SearchBase. Please try again.</div>;
+    }
     return (
       <div class={className}>
         {title && (
