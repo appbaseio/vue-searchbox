@@ -1,6 +1,7 @@
 {
   "name": "vue-searchbox",
   "version": "0.0.1-alpha",
+  "private": false,
   "description": "Lightweight searchbox component for Vue",
   "author": "Anuj Shah <anujshah584@gmail.com>",
   "main": "dist/vue-searchbox.cjs.js",
@@ -12,6 +13,21 @@
     "build": "nps build",
     "watch": "nps watch"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/appbaseio/vue-searchbox.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/appbaseio/vue-searchbox/issues"
+  },
+  "keywords": [
+    "appbase",
+    "elasticsearch",
+    "search",
+    "vue-searchbox"
+  ],
+  "homepage": "https://github.com/appbaseio/vue-searchbox#readme",
   "dependencies": {
     "@appbaseio/searchbase": "^1.0.0-alpha.2",
     "@appbaseio/vue-emotion": "^0.4.4",
