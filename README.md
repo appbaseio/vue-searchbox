@@ -1,22 +1,39 @@
-# vue-searchbox
+<h2 align="center">
+  <img src="https://i.imgur.com/iiR9wAs.png" alt="searchbase" title="searchbase" width="200" />
+  <br />
+  Vue Searchbox
+  <br />
+</h2>
+<p align="center" style="font-size: 1.2rem">A lightweight vue search library with some common utilities.</p>
+<hr />
 
->
+## TOC
+
+1. **[Intro](#1-intro)**
+2. **[Features](#2-features)**
+3. **[Usage](#3-usage)**
+4. **[Installation](#4-installation)**
+5. **[Docs Manual](#5-docs-manual)**
+6. **[Contributing](#6-contributing)**
+7. **[Other Projects You Might Like](#7-other-projects-you-might-like)**
+
+<br />
+
+## 1. Intro
 
 `Vue SearchBox` offers a lightweight (~22KB: Minified + Gzipped) and performance focused searchbox UI component to query and display results from your ElasticSearch app (aka index) using declarative props. It is an alternative to using the [DataSearch component](https://docs.appbase.io/docs/reactivesearch/vue/search/DataSearch/) from Vue ReactiveSearch.
 
----
+[⬆ Back to Top](#toc)
 
-[![NPM](https://img.shields.io/npm/v/vue-searchbox.svg)](https://www.npmjs.com/package/vue-searchbox) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+## 2. Features
 
-## Install
+- Design search experiences with best practices
+- Customize your components at will
+- Follow Vue principles
 
-```bash
-npm install vue-searchbox
-# or
-yarn add vue-searchbox
-```
+[⬆ Back to Top](#toc)
 
-## Usage
+## 3. Usage
 
 ### Basic Usage
 
@@ -54,3 +71,42 @@ yarn add vue-searchbox
   :showVoiceSearch="true"
 />
 ```
+
+[⬆ Back to Top](#toc)
+
+## 4. Installation
+
+```bash
+npm install vue-searchbox
+# or
+yarn add vue-searchbox
+```
+
+[⬆ Back to Top](#toc)
+
+## 5. Docs Manual
+
+The official docs for the library are at [docs/vue-searchbox](https://docs.appbase.io/docs/reactivesearch/vue-searchbox/quickstart/)
+
+[⬆ Back to Top](#toc)
+
+## 6. Contributing
+
+Please check the [contribution guide](./CONTRIBUTING.md)
+
+[⬆ Back to Top](#toc)
+
+## 7. Other Projects You Might Like
+
+- [**dejavu**](https://github.com/appbaseio/dejavu) allows viewing raw data within an appbase.io (or Elasticsearch) app. **Soon to be released feature:** An ability to import custom data from CSV and JSON files, along with a guided walkthrough on applying data mappings.
+
+- [**mirage**](https://github.com/appbaseio/mirage) ReactiveSearch components can be extended using custom Elasticsearch queries. For those new to Elasticsearch, Mirage provides an intuitive GUI for composing queries.
+
+- [**ReactiveSearch Dashboard**](https://dashboard.appbase.io/reactivesearch/) All your Reactive Search related apps (created via interactive tutorial, shared by others, etc.) can be accessed from here.
+- [**ReactiveMaps**](https://github.com/appbaseio/reactivemaps) is a similar project to Reactive Search that allows building realtime maps easily.
+
+- [**appbase-js**](https://github.com/appbaseio/appbase-js) While building search UIs is dandy with Reactive Search, you might also need to add some input forms. **appbase-js** comes in handy there.
+
+[⬆ Back to Top](#toc)
+
+<a href="https://appbase.io/support/"><img src="https://i.imgur.com/UL6B0uE.png" width="100%" /></a>
