@@ -52,3 +52,8 @@ export const scrollIntoView = (node, rootNode) => {
     el.scrollLeft = left;
   });
 };
+
+// escapes regex for special characters: \ => \\, $ => \$
+export function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
+}
