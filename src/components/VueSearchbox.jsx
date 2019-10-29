@@ -2,7 +2,11 @@ import { types } from "../utils/types";
 import Input from "../styles/Input";
 import Searchbase from "@appbaseio/searchbase";
 import DownShift from "./DownShift.jsx";
-import { equals, getClassName } from "../utils/helper";
+import {
+  equals,
+  getClassName,
+  debounce as debounceFunc
+} from "../utils/helper";
 import { suggestions, suggestionsContainer } from "../styles/Suggestions";
 import SuggestionItem from "../addons/SuggestionItem.jsx";
 import Title from "../styles/Title";
@@ -66,6 +70,10 @@ const VueSearchbox = {
   },
   created() {
     this._initSearchBase();
+    this.triggerSuggestionsQuery = debounceFunc(
+      this.triggerSuggestionsQuery,
+      this.debounce
+    );
   },
   watch: {
     dataField: (next, prev) => this._applySetter(prev, next, "setDataField"),
@@ -74,7 +82,8 @@ const VueSearchbox = {
     nestedField: (next, prev) => this._applySetter(prev, next, "setNestedField")
   },
   beforeDestroy() {
-    this.searchBase.unsubscribeToStateChanges(this.setStateValue);
+    this.searchBase &&
+      this.searchBase.unsubscribeToStateChanges(this.setStateValue);
   },
   methods: {
     _initSearchBase() {
@@ -314,9 +323,7 @@ const VueSearchbox = {
     return (
       <div class={className}>
         {title && (
-          <Title class={getClassName(innerClass, "title") || null}>
-            {title}
-          </Title>
+          <Title class={getClassName(innerClass, "title") || ""}>{title}</Title>
         )}
         {defaultSuggestions || autosuggest ? (
           <DownShift
