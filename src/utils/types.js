@@ -1,5 +1,7 @@
 import VueTypes from "vue-types";
 
+VueTypes.sensibleDefaults = false;
+
 const DataField = VueTypes.shape({
   field: VueTypes.string,
   weight: VueTypes.number
