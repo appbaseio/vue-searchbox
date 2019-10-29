@@ -2,9 +2,11 @@ import { types } from "../utils/types";
 import Input from "../styles/Input";
 import Searchbase from "@appbaseio/searchbase";
 import DownShift from "./DownShift.jsx";
-import { getClassName } from "../utils/helper";
+import { equals, getClassName } from "../utils/helper";
 import { suggestions, suggestionsContainer } from "../styles/Suggestions";
 import SuggestionItem from "../addons/SuggestionItem.jsx";
+import Title from "../styles/Title";
+import Icons from "./Icons.jsx";
 
 const VueSearchbox = {
   name: "VueSearchbox", // vue component name
@@ -18,7 +20,6 @@ const VueSearchbox = {
     nestedField: types.nestedField,
     title: types.title,
     defaultValue: types.defaultValue,
-    value: types.value,
     placeholder: types.placeholder,
     showIcon: types.showIcon,
     iconPosition: types.iconPosition,
@@ -39,7 +40,7 @@ const VueSearchbox = {
     render: types.render,
     renderError: types.renderError,
     renderNoSuggestion: types.renderNoSuggestion,
-    getMicInstance: types.getMicInstance,
+    renderAllSuggestions: types.renderAllSuggestions,
     renderMic: types.renderMic,
     innerClass: types.innerClass,
     defaultQuery: types.defaultQuery,
@@ -57,13 +58,23 @@ const VueSearchbox = {
       suggestionsList: defaultSuggestions || [],
       isOpen: false,
       error: null,
-      loading: false
+      loading: false,
+      initError: null,
+      micStatus: undefined
     };
     return this.state;
   },
   created() {
-    console.log(this.$props);
     this._initSearchBase();
+  },
+  watch: {
+    dataField: (next, prev) => this._applySetter(prev, next, "setDataField"),
+    headers: (next, prev) => this._applySetter(prev, next, "setHeaders"),
+    fuzziness: (next, prev) => this._applySetter(prev, next, "setFuzziness"),
+    nestedField: (next, prev) => this._applySetter(prev, next, "setNestedField")
+  },
+  beforeDestroy() {
+    this.searchBase.unsubscribeToStateChanges(this.setStateValue);
   },
   methods: {
     _initSearchBase() {
@@ -108,19 +119,40 @@ const VueSearchbox = {
           "suggestions"
         ]);
 
+        this.searchBase.onQueryChange = (...args) => {
+          this.$emit("queryChange", ...args);
+        };
+        this.searchBase.onSuggestions = (...args) => {
+          this.$emit("suggestions", ...args);
+        };
+        this.searchBase.onError = error => {
+          this.error = error;
+          this.$emit("error", error);
+        };
+        this.searchBase.onSuggestionsRequestStatusChange = next => {
+          this.loading = next === "PENDING";
+        };
+        this.searchBase.onMicStatusChange = next => {
+          this.micStatus = next;
+          this.isOpen = next === "INACTIVE" && !this.loading;
+        };
         this.searchBase.onValueChange = nextValue => {
           this.currentValue = nextValue;
           this.$emit("valueChange", nextValue);
         };
       } catch (e) {
+        this.initError = e;
         console.error(e);
       }
+    },
+    _applySetter(prev, next, setterFunc) {
+      if (!equals(prev, next))
+        this.searchBase && this.searchBase[setterFunc](next);
     },
     setStateValue({ suggestions = {} }) {
       this.suggestionsList = (suggestions.next && suggestions.next.data) || [];
     },
     onInputChange(event) {
-      console.log("inside oninputchange", event);
       this.setValue({ value: event.target.value, event });
     },
     onSuggestionSelected(suggestion) {
@@ -131,7 +163,6 @@ const VueSearchbox = {
         );
     },
     setValue({ value, isOpen = true }) {
-      console.log("inside setValue", this.searchBase);
       const { debounce } = this.$props;
       this.isOpen = isOpen;
       if (debounce > 0)
@@ -139,7 +170,6 @@ const VueSearchbox = {
       this.triggerSuggestionsQuery(value);
     },
     triggerSuggestionsQuery(value) {
-      console.log("inside triggerSuggestionsQuery", value);
       this.searchBase &&
         this.searchBase.setValue(value || "", {
           triggerSuggestionsQuery: true
@@ -161,13 +191,17 @@ const VueSearchbox = {
 
       this.$emit("keyDown", event);
     },
+    handleMicClick() {
+      this.searchBase &&
+        this.searchBase.onMicClick(null, {
+          triggerSuggestionsQuery: true
+        });
+    },
     renderIcons() {
       const {
         iconPosition,
         showClear,
         clearIcon,
-        getMicInstance,
-        renderMic,
         innerClass,
         showVoiceSearch,
         icon,
@@ -184,19 +218,59 @@ const VueSearchbox = {
           handleSearchIconClick={this.handleSearchIconClick}
           icon={icon}
           showIcon={showIcon}
-          getMicInstance={getMicInstance}
-          renderMic={renderMic}
           innerClass={innerClass}
           enableVoiceSearch={showVoiceSearch}
-          onMicClick={() => {
-            this.searchBase &&
-              this.searchBase.onMicClick(null, {
-                triggerSuggestionsQuery: true
-              });
-          }}
           micStatus={micStatus}
+          handleMicClick={this.handleMicClick}
         />
       );
+    },
+    renderNoSuggestionComponent() {
+      const { innerClass, renderError } = this.$props;
+      const {
+        loading,
+        error,
+        isOpen,
+        currentValue,
+        suggestionsList
+      } = this.$data;
+      const renderNoSuggestion =
+        this.$scopedSlots.renderNoSuggestion || this.$props.renderNoSuggestion;
+      if (
+        renderNoSuggestion &&
+        isOpen &&
+        !suggestionsList.length &&
+        !loading &&
+        currentValue &&
+        !(renderError && error)
+      ) {
+        return (
+          <div
+            class={`no-suggestions ${getClassName(innerClass, "noSuggestion")}`}
+          >
+            {typeof renderNoSuggestion === "function"
+              ? renderNoSuggestion(currentValue)
+              : renderNoSuggestion}
+          </div>
+        );
+      }
+      return null;
+    },
+    renderErrorComponent() {
+      const { innerClass } = this.$props;
+      const renderError =
+        this.$scopedSlots.renderError || this.$props.renderError;
+      const { error, loading, currentValue } = this.$data;
+      if (error && renderError && currentValue && !loading) {
+        return (
+          <div class={getClassName(innerClass, "error")}>
+            {typeof renderError === "function"
+              ? renderError(error)
+              : renderError}
+          </div>
+        );
+      }
+      return null;
     },
     clearValue() {
       this.setValue({ value: "", isOpen: false });
@@ -215,96 +289,170 @@ const VueSearchbox = {
     const {
       className,
       innerClass,
-      value,
       showIcon,
       showClear,
-      iconPosition
+      iconPosition,
+      title,
+      defaultSuggestions,
+      autosuggest,
+      placeholder,
+      autoFocus,
+      innerRef,
+      renderError
     } = this.$props;
-    const { currentValue, isOpen, suggestionsList } = this.$data;
+    const { currentValue, isOpen, suggestionsList, initError } = this.$data;
+    if (initError) {
+      if (renderError)
+        return typeof renderError === "function"
+          ? renderError(initError)
+          : renderError;
+      return <div>Error initializing SearchBase. Please try again.</div>;
+    }
+    const renderAllSuggestions =
+      this.$scopedSlots.renderAllSuggestions ||
+      this.$props.renderAllSuggestions;
     return (
       <div class={className}>
-        <DownShift
-          id="searchbox-downshift"
-          handleChange={this.onSuggestionSelected}
-          handleMouseup={this.handleStateChange}
-          isOpen={isOpen}
-          scopedSlots={{
-            default: ({
-              getInputEvents,
-              getInputProps,
+        {title && (
+          <Title class={getClassName(innerClass, "title") || null}>
+            {title}
+          </Title>
+        )}
+        {defaultSuggestions || autosuggest ? (
+          <DownShift
+            id="searchbox-downshift"
+            handleChange={this.onSuggestionSelected}
+            handleMouseup={this.handleStateChange}
+            isOpen={isOpen}
+            scopedSlots={{
+              default: ({
+                getInputEvents,
+                getInputProps,
 
-              getItemProps,
-              getItemEvents,
+                getItemProps,
+                getItemEvents,
 
-              isOpen,
-              highlightedIndex
-            }) => (
-              <div class={suggestionsContainer}>
-                <Input
-                  id="search-box"
-                  showIcon={showIcon}
-                  showClear={showClear}
-                  iconPosition={iconPosition}
-                  class={getClassName(innerClass, "input")}
-                  {...{
-                    on: getInputEvents({
-                      onInput: this.onInputChange,
-                      onBlur: e => {
-                        this.$emit("blur", e);
-                      },
-                      onFocus: this.handleFocus,
-                      onKeyPress: e => {
-                        this.$emit("keyPress", e);
-                      },
-                      onKeyDown: e => this.handleKeyDown(e, highlightedIndex),
-                      onKeyUp: e => {
-                        this.$emit("keyUp", e);
-                      }
-                    })
-                  }}
-                  {...{
-                    domProps: getInputProps({
-                      value:
-                        value || (currentValue === null ? "" : currentValue)
-                    })
-                  }}
-                />
-                {isOpen && suggestionsList.length ? (
-                  <ul
-                    class={`${suggestions} ${getClassName(innerClass, "list")}`}
-                  >
-                    {suggestionsList.slice(0, 10).map((item, index) => (
-                      <li
-                        {...{
-                          domProps: getItemProps({ item })
-                        }}
-                        {...{
-                          on: getItemEvents({
-                            item
-                          })
-                        }}
-                        key={`${index + 1}-${item.value}`}
-                        style={{
-                          backgroundColor: this.getBackgroundColor(
-                            highlightedIndex,
-                            index
-                          )
-                        }}
-                      >
-                        <SuggestionItem
-                          currentValue={currentValue}
-                          suggestion={item}
-                        />
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <div>no suggestion</div>
-                )}
-              </div>
-            )
-          }}
-        />
+                isOpen,
+                highlightedIndex
+              }) => (
+                <div class={suggestionsContainer}>
+                  <Input
+                    id="search-box"
+                    showIcon={showIcon}
+                    showClear={showClear}
+                    iconPosition={iconPosition}
+                    class={getClassName(innerClass, "input")}
+                    {...{
+                      on: getInputEvents({
+                        onInput: this.onInputChange,
+                        onBlur: e => {
+                          this.$emit("blur", e);
+                        },
+                        onFocus: this.handleFocus,
+                        onKeyPress: e => {
+                          this.$emit("keyPress", e);
+                        },
+                        onKeyDown: e => this.handleKeyDown(e, highlightedIndex),
+                        onKeyUp: e => {
+                          this.$emit("keyUp", e);
+                        }
+                      })
+                    }}
+                    {...{
+                      domProps: getInputProps({
+                        value: currentValue ? currentValue : ""
+                      })
+                    }}
+                  />
+                  {this.renderIcons()}
+                  {renderAllSuggestions &&
+                    renderAllSuggestions({
+                      currentValue,
+                      isOpen,
+                      getItemProps,
+                      getItemEvents,
+                      highlightedIndex,
+                      parsedSuggestions: suggestionsList
+                    })}
+                  {this.renderErrorComponent()}
+                  {!renderAllSuggestions && isOpen && suggestionsList.length ? (
+                    <ul
+                      class={`${suggestions} ${getClassName(
+                        innerClass,
+                        "list"
+                      )}`}
+                    >
+                      {suggestionsList.slice(0, 10).map((item, index) => (
+                        <li
+                          {...{
+                            domProps: getItemProps({ item })
+                          }}
+                          {...{
+                            on: getItemEvents({
+                              item
+                            })
+                          }}
+                          key={`${index + 1}-${item.value}`}
+                          style={{
+                            backgroundColor: this.getBackgroundColor(
+                              highlightedIndex,
+                              index
+                            )
+                          }}
+                        >
+                          <SuggestionItem
+                            currentValue={currentValue}
+                            suggestion={item}
+                          />
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    this.renderNoSuggestionComponent()
+                  )}
+                </div>
+              )
+            }}
+          />
+        ) : (
+          <div class={suggestionsContainer}>
+            <Input
+              class={getClassName(innerClass, "input") || ""}
+              placeholder={placeholder}
+              {...{
+                on: {
+                  blur: e => {
+                    this.$emit("blur", e);
+                  },
+                  keypress: e => {
+                    this.$emit("keyPress", e);
+                  },
+                  input: this.onInputChange,
+                  focus: e => {
+                    this.$emit("focus", e);
+                  },
+                  keydown: e => {
+                    this.$emit("keyDown", e);
+                  },
+                  keyup: e => {
+                    this.$emit("keyUp", e);
+                  }
+                }
+              }}
+              {...{
+                domProps: {
+                  autofocus: autoFocus,
+                  value: currentValue ? currentValue : ""
+                }
+              }}
+              iconPosition={iconPosition}
+              showIcon={showIcon}
+              showClear={showClear}
+              innerRef={innerRef}
+            />
+            {this.renderIcons()}
+          </div>
+        )}
       </div>
     );
   }
