@@ -5,7 +5,9 @@ import DownShift from "./DownShift.jsx";
 import {
   equals,
   getClassName,
-  debounce as debounceFunc
+  debounce as debounceFunc,
+  isEmpty,
+  getURLParameters
 } from "../utils/helper";
 import { suggestions, suggestionsContainer } from "../styles/Suggestions";
 import SuggestionItem from "../addons/SuggestionItem.jsx";
@@ -51,7 +53,10 @@ const VueSearchbox = {
     beforeValueChange: types.beforeValueChange,
     className: types.className,
     loader: types.loader,
-    autoFocus: types.autoFocus
+    autoFocus: types.autoFocus,
+    currentURL: types.currentURL,
+    searchTerm: types.searchTerm,
+    URLParams: types.URLParams
   },
   data() {
     const { value, defaultValue, defaultSuggestions } = this.$props;
@@ -74,12 +79,35 @@ const VueSearchbox = {
       this.triggerSuggestionsQuery,
       this.debounce
     );
+    if (this.URLParams) {
+      this.setValue({
+        value: this.getSearchTerm(this.currentURL),
+        isOpen: false
+      });
+    }
   },
   watch: {
-    dataField: (next, prev) => this._applySetter(prev, next, "setDataField"),
-    headers: (next, prev) => this._applySetter(prev, next, "setHeaders"),
-    fuzziness: (next, prev) => this._applySetter(prev, next, "setFuzziness"),
-    nestedField: (next, prev) => this._applySetter(prev, next, "setNestedField")
+    dataField: function(next, prev) {
+      return this._applySetter(prev, next, "setDataField");
+    },
+    headers: function(next, prev) {
+      return this._applySetter(prev, next, "setHeaders");
+    },
+    fuzziness: function(next, prev) {
+      return this._applySetter(prev, next, "setFuzziness");
+    },
+    nestedField: function(next, prev) {
+      return this._applySetter(prev, next, "setNestedField");
+    },
+    currentURL: function(next, prev) {
+      const { URLParams } = this.$props;
+      if (URLParams && prev !== next) {
+        this.setValue({
+          value: this.getSearchTerm(next),
+          isOpen: false
+        });
+      }
+    }
   },
   beforeDestroy() {
     this.searchBase &&
@@ -161,6 +189,10 @@ const VueSearchbox = {
     setStateValue({ suggestions = {} }) {
       this.suggestionsList = (suggestions.next && suggestions.next.data) || [];
     },
+    getSearchTerm(url = "") {
+      const searchParams = getURLParameters(url);
+      return searchParams && searchParams[this.searchTerm];
+    },
     onInputChange(event) {
       this.setValue({ value: event.target.value, event });
     },
@@ -172,11 +204,18 @@ const VueSearchbox = {
         );
     },
     setValue({ value, isOpen = true }) {
-      const { debounce } = this.$props;
+      const { debounce, searchTerm, URLParams } = this.$props;
       this.isOpen = isOpen;
       if (debounce > 0)
         this.searchBase.setValue(value, { triggerQuery: false });
       this.triggerSuggestionsQuery(value);
+      if (URLParams) {
+        window.history.replaceState(
+          !isEmpty(value) ? { [searchTerm]: value } : null,
+          null,
+          !isEmpty(value) ? `?${searchTerm}=${value}` : window.location.origin
+        );
+      }
     },
     triggerSuggestionsQuery(value) {
       this.searchBase &&
@@ -465,4 +504,15 @@ const VueSearchbox = {
   }
 };
 
-export default VueSearchbox;
+const VueSearchboxWrapper = {
+  render() {
+    return (
+      <VueSearchbox
+        {...{ attrs: this.$attrs }}
+        currentURL={window.location.href}
+      />
+    );
+  }
+};
+
+export default VueSearchboxWrapper;
