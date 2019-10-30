@@ -8241,13 +8241,14 @@ vue-loader@^15.7.0:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
-vue-searchbox@^0.0.1-alpha:
-  version "0.0.1-alpha"
-  resolved "https://registry.yarnpkg.com/vue-searchbox/-/vue-searchbox-0.0.1-alpha.tgz#5ee39b1446d0007de769604030c7df61cbee9ad8"
-  integrity sha512-m459xvuj12qX+7SLUJE83ebHZopMVFx1XET641NcyWt1x/59GGm+LSn/fmwuo6Lfc/U7CChCZbFCPO5o/v7u6Q==
+vue-searchbox@^1.0.0-alpha:
+  version "1.0.0-alpha"
+  resolved "https://registry.yarnpkg.com/vue-searchbox/-/vue-searchbox-1.0.0-alpha.tgz#888795c61b9fd4c58909fe2930cdd35d5933c3fe"
+  integrity sha512-r2syzCkAfKNFK1hsx4qW79UZ5SXmekcbm+F1N3WcQTbGsaRFPFCxdMXxn7a44ToAz8BICypWsIB/w1W8w67VwA==
   dependencies:
     "@appbaseio/searchbase" "^1.0.0-alpha.2"
     "@appbaseio/vue-emotion" "^0.4.4"
+    "@vue/babel-helper-vue-jsx-merge-props" "^1.0.0"
     compute-scroll-into-view "^1.0.11"
     emotion "^10.0.17"
     vue-types "^1.6.0"
