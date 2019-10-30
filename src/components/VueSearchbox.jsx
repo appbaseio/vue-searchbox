@@ -76,10 +76,18 @@ const VueSearchbox = {
     );
   },
   watch: {
-    dataField: (next, prev) => this._applySetter(prev, next, "setDataField"),
-    headers: (next, prev) => this._applySetter(prev, next, "setHeaders"),
-    fuzziness: (next, prev) => this._applySetter(prev, next, "setFuzziness"),
-    nestedField: (next, prev) => this._applySetter(prev, next, "setNestedField")
+    dataField: function(next, prev) {
+      return this._applySetter(prev, next, "setDataField");
+    },
+    headers: function(next, prev) {
+      return this._applySetter(prev, next, "setHeaders");
+    },
+    fuzziness: function(next, prev) {
+      return this._applySetter(prev, next, "setFuzziness");
+    },
+    nestedField: function(next, prev) {
+      return this._applySetter(prev, next, "setNestedField");
+    }
   },
   beforeDestroy() {
     this.searchBase &&
