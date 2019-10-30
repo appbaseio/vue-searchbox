@@ -1,9 +1,14 @@
+import { escapeRegExp } from "../utils/helper";
+
 const SuggestionItem = {
   props: ["suggestion", "currentValue"],
   render() {
     const { suggestion, currentValue } = this.$props;
     const { label, value } = suggestion;
-    const stringToReplace = currentValue.split(" ").join("|");
+    const modSearchWords = currentValue
+      .split(" ")
+      .map(word => escapeRegExp(word));
+    const stringToReplace = modSearchWords.join("|");
     if (label) {
       // label has highest precedence
       return typeof label === "string" ? (
