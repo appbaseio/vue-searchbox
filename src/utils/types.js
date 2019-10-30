@@ -51,5 +51,8 @@ export const types = {
   beforeValueChange: VueTypes.func,
   className: VueTypes.string.def(""),
   loader: VueTypes.object,
-  autoFocus: VueTypes.bool.def(false)
+  autoFocus: VueTypes.bool.def(false),
+  currentURL: VueTypes.string.def(""),
+  searchTerm: VueTypes.string.def("search"),
+  URLParams: VueTypes.bool.def(false)
 };

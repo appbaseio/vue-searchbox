@@ -57,3 +57,15 @@ export const scrollIntoView = (node, rootNode) => {
 export function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
 }
+
+export const getURLParameters = url => {
+  const keyVal = {};
+  url.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
+    key = decodeURIComponent(key);
+    value = decodeURIComponent(value);
+    keyVal[key] = value;
+  });
+  return keyVal;
+};
+
+export const isEmpty = val => !(val && val.length && Object.keys(val).length);
