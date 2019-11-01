@@ -54,5 +54,12 @@ export const types = {
   autoFocus: VueTypes.bool.def(false),
   currentURL: VueTypes.string.def(""),
   searchTerm: VueTypes.string.def("search"),
-  URLParams: VueTypes.bool.def(false)
+  URLParams: VueTypes.bool.def(false),
+  analyticsConfig: VueTypes.shape({
+    searchStateHeader: VueTypes.bool,
+    emptyQuery: VueTypes.bool,
+    suggestionAnalytics: VueTypes.bool,
+    userId: VueTypes.string,
+    customEvents: VueTypes.object
+  }).def({})
 };

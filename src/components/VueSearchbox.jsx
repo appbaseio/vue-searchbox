@@ -56,7 +56,8 @@ const VueSearchbox = {
     autoFocus: types.autoFocus,
     currentURL: types.currentURL,
     searchTerm: types.searchTerm,
-    URLParams: types.URLParams
+    URLParams: types.URLParams,
+    analyticsConfig: types.analyticsConfig
   },
   data() {
     const { value, defaultValue, defaultSuggestions } = this.$props;
@@ -186,6 +187,28 @@ const VueSearchbox = {
       if (!equals(prev, next))
         this.searchBase && this.searchBase[setterFunc](next);
     },
+    setAnalytics(config) {
+      if (!this.searchBase) return;
+      const { emptyQuery, userId, customEvents } = config;
+      const { analyticsInstance } = this.searchBase;
+      emptyQuery
+        ? analyticsInstance.enableEmptyQuery()
+        : analyticsInstance.disableEmptyQuery();
+      analyticsInstance.setUserID(userId).setCustomEvents(customEvents);
+    },
+    triggerClickAnalytics(clickPosition, isSuggestion = true) {
+      const { analytics, analyticsConfig } = this.$props;
+      if (
+        !analytics ||
+        !analyticsConfig.suggestionAnalytics ||
+        !this.searchBase
+      )
+        return;
+      this.searchBase.analyticsInstance.registerClick(
+        clickPosition,
+        isSuggestion
+      );
+    },
     setStateValue({ suggestions = {} }) {
       this.suggestionsList = (suggestions.next && suggestions.next.data) || [];
     },
@@ -198,10 +221,7 @@ const VueSearchbox = {
     },
     onSuggestionSelected(suggestion) {
       this.setValue({ value: suggestion && suggestion.value, isOpen: false });
-      this.searchBase &&
-        this.searchBase.triggerClickAnalytics(
-          suggestion && suggestion._click_id
-        );
+      this.triggerClickAnalytics(suggestion && suggestion.source._id);
     },
     setValue({ value, isOpen = true }) {
       const { debounce, searchTerm, URLParams } = this.$props;
