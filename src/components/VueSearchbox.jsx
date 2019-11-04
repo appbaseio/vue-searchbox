@@ -7,7 +7,8 @@ import {
   getClassName,
   debounce as debounceFunc,
   isEmpty,
-  getURLParameters
+  getURLParameters,
+  withClickIds
 } from "../utils/helper";
 import { suggestions, suggestionsContainer } from "../styles/Suggestions";
 import SuggestionItem from "../addons/SuggestionItem.jsx";
@@ -107,6 +108,11 @@ const VueSearchbox = {
           value: this.getSearchTerm(next),
           isOpen: false
         });
+      }
+    },
+    analyticsConfig: function(next, prev) {
+      if (this.analytics && JSON.stringify(next) !== JSON.stringify(prev)) {
+        this.setAnalytics(next);
       }
     }
   },
@@ -210,7 +216,8 @@ const VueSearchbox = {
       );
     },
     setStateValue({ suggestions = {} }) {
-      this.suggestionsList = (suggestions.next && suggestions.next.data) || [];
+      this.suggestionsList =
+        withClickIds(suggestions.next && suggestions.next.data) || [];
     },
     getSearchTerm(url = "") {
       const searchParams = getURLParameters(url);
@@ -221,7 +228,7 @@ const VueSearchbox = {
     },
     onSuggestionSelected(suggestion) {
       this.setValue({ value: suggestion && suggestion.value, isOpen: false });
-      this.triggerClickAnalytics(suggestion && suggestion.source._id);
+      this.triggerClickAnalytics(suggestion && suggestion._click_id);
     },
     setValue({ value, isOpen = true }) {
       const { debounce, searchTerm, URLParams } = this.$props;
