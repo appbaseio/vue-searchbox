@@ -98,6 +98,8 @@ Please check the [contribution guide](./CONTRIBUTING.md)
 
 ## 7. Other Projects You Might Like
 
+- [**reactivesearch**](https://github.com/appbaseio/reactivesearch) React, React Native and Vue UI components for building data-driven apps with Elasticsearch.
+
 - [**arc**](https://github.com/appbaseio/arc) API Gateway for ElasticSearch (Out of the box Security, Rate Limit Features, Record Analytics and Request Logs).
 
 - **searchbox** Similar to `vue-searchbox` we offer a lightweight and performance focused searchbox UI libraries for Vanilla and React.
