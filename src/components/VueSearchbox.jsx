@@ -24,6 +24,7 @@ const VueSearchbox = {
     analytics: types.analytics,
     headers: types.headers,
     dataField: types.dataField,
+    aggregationField: types.aggregationField,
     nestedField: types.nestedField,
     title: types.title,
     defaultValue: types.defaultValue,
@@ -135,7 +136,8 @@ const VueSearchbox = {
         queryFormat,
         defaultSuggestions,
         fuzziness,
-        searchOperators
+        searchOperators,
+        aggregationField
       } = this.$props;
 
       try {
@@ -148,6 +150,7 @@ const VueSearchbox = {
           index: app,
           url,
           dataField,
+          aggregationField,
           credentials,
           analytics,
           headers,
@@ -168,6 +171,9 @@ const VueSearchbox = {
         };
         this.searchBase.onSuggestions = (...args) => {
           this.$emit("suggestions", ...args);
+        };
+        this.searchBase.onAggregationData = (...args) => {
+          this.$emit("aggregations", ...args);
         };
         this.searchBase.onError = error => {
           this.error = error;
