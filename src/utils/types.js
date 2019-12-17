@@ -17,6 +17,8 @@ export const types = {
     VueTypes.string,
     VueTypes.arrayOf(VueTypes.oneOfType([VueTypes.string, DataField]))
   ]),
+  // aggregationData can be used by listening to event `aggregations`
+  aggregationField: VueTypes.string,
   nestedField: VueTypes.string,
   title: VueTypes.string,
   defaultValue: VueTypes.string,
