@@ -8,7 +8,7 @@ const suggestions = css`
   font-size: 0.9rem;
   z-index: 3;
   position: absolute;
-  top: 39px;
+  top: 41px;
   margin: 0;
   padding: 0;
   list-style: none;

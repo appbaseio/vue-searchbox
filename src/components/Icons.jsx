@@ -54,6 +54,7 @@ const Icons = {
             onClick={clearValue}
             iconPosition="right"
             clearIcon={iconPosition === "right"}
+            showIcon={showIcon}
           >
             {clearIcon || <CancelSvg />}
           </InputIcon>
@@ -64,9 +65,15 @@ const Icons = {
             className={getClassName(innerClass, "mic") || null}
             status={micStatus}
             handleMicClick={handleMicClick}
+            applyClearStyle={!!currentValue && showClear}
+            showIcon={showIcon}
           />
         )}
-        <InputIcon onClick={handleSearchIconClick} iconPosition={iconPosition}>
+        <InputIcon
+          showIcon={showIcon}
+          onClick={handleSearchIconClick}
+          iconPosition={iconPosition}
+        >
           <SearchIcon showIcon={showIcon} icon={icon} />
         </InputIcon>
       </div>

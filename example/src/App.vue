@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import VueSearchbox from "vue-searchbox";
+import VueSearchbox from "@appbaseio/vue-searchbox";
 
 export default {
   name: "app",

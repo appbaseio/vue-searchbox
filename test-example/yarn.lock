@@ -2,11 +2,19 @@
 # yarn lockfile v1
 
 
-"@appbaseio/searchbase@^1.0.0-alpha.2":
-  version "1.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@appbaseio/searchbase/-/searchbase-1.0.0-alpha.2.tgz#7cfa042e281ee88f5515d7ef7135417071082089"
-  integrity sha512-XfdWY909xa/LgFgfR75OsEM5m2W63nbB0YkUczAlw7VuSn7ADQGDfNbYNF2R3ZP9X3TKdmwXz3F6zfQpW4OMYQ==
+"@appbaseio/analytics@^1.0.0-alpha.1":
+  version "1.0.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/@appbaseio/analytics/-/analytics-1.0.0-alpha.1.tgz#8e9b5fb9dc121e7ef44f7d2df60c209d7bdbacd7"
+  integrity sha512-QJFneR/U0ANeUxV/5dZOaNmXZh4Z78VDxYRF8+Z9OISa4KLioTsIgO5rv9YBT99/cRzvO7zzjgGk0mhdBo+uUg==
   dependencies:
+    cross-fetch "^3.0.4"
+
+"@appbaseio/searchbase@^1.0.0-alpha.4":
+  version "1.0.0-alpha.5"
+  resolved "https://registry.yarnpkg.com/@appbaseio/searchbase/-/searchbase-1.0.0-alpha.5.tgz#8efedec4279cc11b5bf5c67c1ae58cec57ee55c7"
+  integrity sha512-tV/fYMn/+Mv1HDtWN+bM8kMMLKEx0ndDOc7y5ofqX/XgxyK/ZR385nXaulvjuPuGzQ5vactMTC2EP5/OEmhbfA==
+  dependencies:
+    "@appbaseio/analytics" "^1.0.0-alpha.1"
     cross-fetch "^3.0.4"
 
 "@appbaseio/vue-emotion@^0.4.4":
@@ -16,6 +24,10 @@
   dependencies:
     emotion-utils "^9.1.0"
     nano-assign "^1.0.0"
+
+"@appbaseio/vue-searchbox@link:..":
+  version "0.0.0"
+  uid ""
 
 "@babel/code-frame@7.5.5", "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.5.5":
   version "7.5.5"
@@ -10362,10 +10374,6 @@ vue-loader@^15.7.0:
     loader-utils "^1.1.0"
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
-
-"vue-searchbox@link:..":
-  version "0.0.0"
-  uid ""
 
 vue-style-loader@^4.1.0:
   version "4.1.2"

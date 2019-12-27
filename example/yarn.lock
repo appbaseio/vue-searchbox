@@ -25,6 +25,18 @@
     emotion-utils "^9.1.0"
     nano-assign "^1.0.0"
 
+"@appbaseio/vue-searchbox@^1.0.0-alpha.1":
+  version "1.0.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/@appbaseio/vue-searchbox/-/vue-searchbox-1.0.0-alpha.1.tgz#7f125ae77d1800acdfff97be15f49e7d3e46c437"
+  integrity sha512-WXy0x1WyQt9UifxTLx+Iuw4SyOm1k5ZOC/QCoubukbH+vNcJIsshCSnuhnIRFkF1m88+gClzL/xZSUHSWdy3Xw==
+  dependencies:
+    "@appbaseio/searchbase" "^1.0.0-alpha.4"
+    "@appbaseio/vue-emotion" "^0.4.4"
+    "@vue/babel-helper-vue-jsx-merge-props" "^1.0.0"
+    compute-scroll-into-view "^1.0.11"
+    emotion "^10.0.17"
+    vue-types "^1.6.0"
+
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.5.5":
   version "7.5.5"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.5.5.tgz#bc0782f6d69f7b7d49531219699b988f669a8f9d"
@@ -8248,18 +8260,6 @@ vue-loader@^15.7.0:
     loader-utils "^1.1.0"
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
-
-vue-searchbox@^1.0.0-alpha.1:
-  version "1.0.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/vue-searchbox/-/vue-searchbox-1.0.0-alpha.1.tgz#552b97a4a51c1e2909b9b17a53dc80b0323519c8"
-  integrity sha512-yppAM/Gf0ie6bgAad6xNHJOhU4lOStu3j9oAZpFdKSb5OZTunwWK/tVgNZh5rLFPKXcR+PACl4dYdxaZeKkKfg==
-  dependencies:
-    "@appbaseio/searchbase" "^1.0.0-alpha.4"
-    "@appbaseio/vue-emotion" "^0.4.4"
-    "@vue/babel-helper-vue-jsx-merge-props" "^1.0.0"
-    compute-scroll-into-view "^1.0.11"
-    emotion "^10.0.17"
-    vue-types "^1.6.0"
 
 vue-style-loader@^4.1.0:
   version "4.1.2"

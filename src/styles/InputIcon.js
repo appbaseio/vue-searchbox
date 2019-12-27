@@ -1,5 +1,5 @@
 import styled from "@appbaseio/vue-emotion";
-import {css} from "emotion";
+import { css } from "emotion";
 
 const left = css`
   padding-left: 12px;
@@ -30,6 +30,7 @@ const InputIcon = styled("div")`
     return null;
   }};
   ${({ clearIcon }) => clearIcon && clear};
+  ${({ showIcon }) => !showIcon && "padding-right:10px"};
 
   svg.search-icon {
     fill: #0b6aff;

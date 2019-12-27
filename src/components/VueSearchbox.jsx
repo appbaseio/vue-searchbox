@@ -421,6 +421,7 @@ const VueSearchbox = {
                     showClear={showClear}
                     iconPosition={iconPosition}
                     class={getClassName(innerClass, "input")}
+                    placeholder={placeholder}
                     {...{
                       on: getInputEvents({
                         onInput: this.onInputChange,

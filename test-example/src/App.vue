@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import VueSearchbox from "vue-searchbox";
+import VueSearchbox from "@appbaseio/vue-searchbox";
 
 export default {
   name: "app",
@@ -33,5 +33,7 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  width: 50%;
+  padding-left: 100px;
 }
 </style>

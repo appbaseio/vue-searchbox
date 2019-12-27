@@ -8,7 +8,7 @@ const STATUS = {
 };
 
 const Icon = {
-  props: ["status", "handleMicClick", "className"],
+  props: ["status", "handleMicClick", "className", "applyClearStyle"],
   render() {
     const { status, className, handleMicClick } = this.$props;
     let url;
@@ -36,18 +36,36 @@ const Icon = {
         class={className}
         onClick={handleMicClick}
         src={url}
-        style={{ width: "24px", marginTop: "7px" }}
+        style={{ width: "18px" }}
       />
     );
   }
 };
 
 const Mic = {
-  props: ["iconPosition", "handleMicClick", "className", "status"],
+  props: [
+    "iconPosition",
+    "handleMicClick",
+    "className",
+    "status",
+    "showIcon",
+    "applyClearStyle"
+  ],
   render() {
-    const { iconPosition, className, handleMicClick, status } = this.$props;
+    const {
+      iconPosition,
+      className,
+      handleMicClick,
+      status,
+      applyClearStyle,
+      showIcon
+    } = this.$props;
     return (
-      <MicIcon iconPosition={iconPosition}>
+      <MicIcon
+        showIcon={showIcon}
+        iconPosition={iconPosition}
+        showClear={applyClearStyle}
+      >
         <Icon
           className={className}
           handleMicClick={handleMicClick}
