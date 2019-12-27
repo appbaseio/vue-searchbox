@@ -1,5 +1,5 @@
 {
-  "name": "vue-searchbox",
+  "name": "@appbaseio/vue-searchbox",
   "version": "1.0.0-alpha.1",
   "private": false,
   "description": "Lightweight searchbox component for Vue",
@@ -17,7 +17,7 @@
     "type": "git",
     "url": "git+https://github.com/appbaseio/vue-searchbox.git"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/appbaseio/vue-searchbox/issues"
   },
