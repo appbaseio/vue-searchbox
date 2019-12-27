@@ -13,7 +13,7 @@ const SuggestionItem = {
       // label has highest precedence
       return typeof label === "string" ? (
         <div
-          className="trim"
+          class="trim"
           domPropsInnerHTML={label.replace(
             new RegExp(stringToReplace, "ig"),
             matched => {
