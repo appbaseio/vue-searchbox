@@ -17,9 +17,15 @@ const clear = css`
   top: 12px;
 `;
 
-const top = props => css`
-  top: ${props.isClearIcon ? "12px" : "13px"};
-`;
+const top = props => {
+  if (props.isClearIcon)
+    return css`
+      top: 12px;
+    `;
+  return css`
+    top: 13px;
+  `;
+};
 
 const icon = props => {
   if (props.iconPosition === "left") return left;
