@@ -17,31 +17,35 @@ const clear = css`
   top: 12px;
 `;
 
+const top = props => css`
+  top: ${props.isClearIcon ? "12px" : "13px"};
+`;
+
+const icon = props => {
+  if (props.iconPosition === "left") return left;
+  if (props.iconPosition === "right") return right;
+  return null;
+};
+
+const clearCss = props => {
+  if (props.clearIcon) return clear;
+  return null;
+};
+
+const showIcon = props => {
+  if (!props.showIcon)
+    return css`
+      padding-right: 10px;
+    `;
+  return null;
+};
+
 const InputIcon = styled("div")`
   position: absolute;
-  ${({ isClearIcon }) =>
-    isClearIcon
-      ? css`
-          top: 12px;
-        `
-      : css`
-          top: 13px;
-        `}
-  cursor: pointer;
-  ${({ iconPosition }) => {
-    if (iconPosition === "left") {
-      return left;
-    } else if (iconPosition === "right") {
-      return right;
-    }
-    return null;
-  }};
-  ${({ clearIcon }) => clearIcon && clear};
-  ${({ showIcon }) =>
-    !showIcon &&
-    css`
-      padding-right: 10px;
-    `}
+  ${top}
+  ${icon}
+  ${clearCss}
+  ${showIcon}
 
   svg.search-icon {
     fill: #0b6aff;
