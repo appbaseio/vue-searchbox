@@ -55,6 +55,7 @@ const Icons = {
             iconPosition="right"
             clearIcon={iconPosition === "right"}
             showIcon={showIcon}
+            isClearIcon
           >
             {clearIcon || <CancelSvg />}
           </InputIcon>

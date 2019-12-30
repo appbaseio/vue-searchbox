@@ -1,5 +1,5 @@
 import Vue from "vue";
-import VueSearchbox from "vue-searchbox";
+import VueSearchbox from "@appbaseio/vue-searchbox";
 
 export default { title: "SearchBox" };
 
@@ -57,7 +57,7 @@ export const withNoSuggestion = () => ({
       app="good-books-ds"
       credentials="nY6NNTZZ6:27b76b9f-18ea-456c-bc5e-3a5263ebc63d"
       dataField={["original_title", "original_title.search"]}
-      renderNoSuggestion={() => <p>No Suggestion</p>}
+      renderNoSuggestion={() => 'No Suggestion'}
     />
   )
 });
