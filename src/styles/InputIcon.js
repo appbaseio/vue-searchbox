@@ -26,7 +26,7 @@ const InputIcon = styled("div")`
         `
       : css`
           top: 13px;
-        `};
+        `}
   cursor: pointer;
   ${({ iconPosition }) => {
     if (iconPosition === "left") {

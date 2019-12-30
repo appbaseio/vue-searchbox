@@ -10,6 +10,7 @@
         searchStateHeader: true,
         suggestionAnalytics: true
       }"
+      :showLoader="true"
     />
   </div>
 </template>
