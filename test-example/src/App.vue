@@ -6,10 +6,6 @@
       :dataField="['original_title', 'original_title.search']"
       :showVoiceSearch="true"
       :analytics="true"
-      :analyticsConfig="{
-        searchStateHeader: true,
-        suggestionAnalytics: true
-      }"
       :showLoader="true"
     />
   </div>
