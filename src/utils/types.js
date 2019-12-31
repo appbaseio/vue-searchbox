@@ -58,9 +58,10 @@ export const types = {
   searchTerm: VueTypes.string.def("search"),
   URLParams: VueTypes.bool.def(false),
   analyticsConfig: VueTypes.shape({
+    searchStateHeader: VueTypes.bool,
     emptyQuery: VueTypes.bool,
     suggestionAnalytics: VueTypes.bool,
     userId: VueTypes.string,
     customEvents: VueTypes.object
-  }).def({})
+  }).def({ searchStateHeader: true, suggestionAnalytics: true })
 };

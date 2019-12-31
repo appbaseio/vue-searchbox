@@ -222,8 +222,16 @@ const VueSearchbox = {
       );
     },
     setStateValue({ suggestions = {} }) {
-      this.suggestionsList =
-        withClickIds(suggestions.next && suggestions.next.data) || [];
+      const { time, hidden, data, promoted, numberOfResults, promotedData } =
+        suggestions.next || {};
+      this.suggestionsList = withClickIds(suggestions.next && data) || [];
+      this.promotedData = promotedData;
+      this.resultStats = {
+        time,
+        hidden,
+        promoted,
+        numberOfResults
+      };
     },
     getSearchTerm(url = "") {
       const searchParams = getURLParameters(url);
@@ -381,7 +389,14 @@ const VueSearchbox = {
       innerRef,
       renderError
     } = this.$props;
-    const { currentValue, isOpen, suggestionsList, initError } = this.$data;
+    const {
+      currentValue,
+      isOpen,
+      suggestionsList,
+      initError,
+      promotedData,
+      resultStats
+    } = this.$data;
     if (initError) {
       if (renderError)
         return typeof renderError === "function"
@@ -452,7 +467,9 @@ const VueSearchbox = {
                       getItemProps,
                       getItemEvents,
                       highlightedIndex,
-                      parsedSuggestions: suggestionsList
+                      parsedSuggestions: suggestionsList,
+                      promotedData,
+                      resultStats
                     })}
                   {this.renderErrorComponent()}
                   {!renderAllSuggestions && isOpen && suggestionsList.length ? (
