@@ -1,6 +1,6 @@
 {
   "name": "@appbaseio/vue-searchbox",
-  "version": "1.0.3-alpha",
+  "version": "1.0.4-alpha",
   "private": false,
   "description": "Lightweight searchbox component for Vue",
   "author": "Anuj Shah <anujshah584@gmail.com>",
