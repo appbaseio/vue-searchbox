@@ -1,3 +1,9 @@
+<h2>
+  Development has moved to <a href="https://github.com/appbaseio/searchbox">appbaseio/searchbox</a> repository.
+</h2>
+
+
+
 <h2 align="center">
   <img src="https://i.imgur.com/iiR9wAs.png" alt="searchbase" title="searchbase" width="200" />
   <br />
